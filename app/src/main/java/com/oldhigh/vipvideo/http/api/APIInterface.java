@@ -1,10 +1,8 @@
 package com.oldhigh.vipvideo.http.api;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
-import retrofit2.http.FormUrlEncoded;
+import okhttp3.ResponseBody;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Url;
 
 /**
@@ -16,7 +14,7 @@ public interface APIInterface {
     Observable<String> getIdentCode(@Url String url);
 
     @GET
-    Call<Object> getIdentCodeCall(@Url String url);
+    Observable<ResponseBody> getIdentCodeCall(@Url String url);
 
 
 }

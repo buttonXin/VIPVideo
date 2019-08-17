@@ -1,8 +1,14 @@
 package com.oldhigh.vipvideo.http;
 
 
+import com.oldhigh.vipvideo.App;
 import com.oldhigh.vipvideo.http.api.APIInterface;
+import com.oldhigh.vipvideo.http.intercept.CacheIntercept;
 
+import java.io.File;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -28,8 +34,17 @@ public class HttpManager {
 
     private HttpManager(OkHttpClient okHttpClient) {
 
+        File cacheFile = new File(App.getContext().getExternalCacheDir(), "cache");
+        //缓存大小为10M
+        int cacheSize = 10 * 1024 * 1024;
+        //创建缓存对象
+        Cache cache = new Cache(cacheFile, cacheSize);
         if (okHttpClient == null) {
-            mOkHttpClient = new OkHttpClient();
+            mOkHttpClient = new OkHttpClient.Builder()
+                    .connectTimeout(20, TimeUnit.SECONDS)
+                    .addInterceptor(new CacheIntercept())
+                    .cache(cache)
+                    .build();
         } else {
             mOkHttpClient = okHttpClient;
         }

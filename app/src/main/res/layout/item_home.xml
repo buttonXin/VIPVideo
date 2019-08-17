@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#2196F3"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp">
+
+    <TextView
+        android:id="@+id/tv_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_item_type"
+        android:gravity="center"
+        tools:text="这是明智"
+
+        />
+
+    <TextView
+        android:id="@+id/tv_item_type"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/tv_item_name"
+        app:layout_constraintTop_toTopOf="@id/tv_item_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_item_name"
+        android:gravity="center"
+
+        tools:text="这是类型"
+
+        />
+
+
+</android.support.constraint.ConstraintLayout>
