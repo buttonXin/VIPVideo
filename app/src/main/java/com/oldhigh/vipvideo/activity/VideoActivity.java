@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -85,6 +86,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
     private void initView() {
         mViewBack = findViewById(R.id.iv_back);
+        updateBackTop();
         mTvName = findViewById(R.id.tv_name);
         mProgressBar = findViewById(R.id.pb_video);
         mSeekBar = findViewById(R.id.seek_bar);
@@ -92,6 +94,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         mTvGrade = findViewById(R.id.tv_grade);
 
         mVideoView = findViewById(R.id.video_view);
+
 
         mRvGrade = findViewById(R.id.rv_grade);
         mVideoItemAdapter = new VideoItemAdapter();
@@ -104,6 +107,18 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
         visibleView(View.VISIBLE);
 
+    }
+
+    /**
+     * 以后动态设置高度
+     */
+    private void updateBackTop() {
+        int height = 0;
+        int resourceId = getApplicationContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            height = getApplicationContext().getResources().getDimensionPixelSize(resourceId);
+
+        }
     }
 
     private void initEvent() {
