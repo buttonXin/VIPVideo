@@ -4,15 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.style.ClickableSpan;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -64,6 +66,13 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // 设置透明状态栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            // 设置透明导航栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
         setContentView(R.layout.activity_video);
         initView();
 
@@ -79,9 +88,10 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
         mTvName = findViewById(R.id.tv_name);
         mProgressBar = findViewById(R.id.pb_video);
         mSeekBar = findViewById(R.id.seek_bar);
+        mSeekBar.setEnabled(false);
         mTvGrade = findViewById(R.id.tv_grade);
 
-        initVideo();
+        mVideoView = findViewById(R.id.video_view);
 
         mRvGrade = findViewById(R.id.rv_grade);
         mVideoItemAdapter = new VideoItemAdapter();
@@ -96,18 +106,12 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void initVideo() {
-        mVideoView = findViewById(R.id.video_view);
-
-
-    }
-
     private void initEvent() {
 
         mViewBack.setOnClickListener(this);
         mTvName.setOnClickListener(this);
         mTvGrade.setOnClickListener(this);
-        mVideoView.setOnClickListener(this);
+        initVideo();
         mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -156,6 +160,25 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
+    }
+
+    private void initVideo() {
+        mVideoView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if (mVideoView.isPlaying()) {
+
+                    if (mTvGrade.getVisibility() == View.VISIBLE) {
+                        visibleView(View.GONE);
+                        mRvGrade.setVisibility(View.GONE);
+                    } else {
+                        visibleView(View.VISIBLE);
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private void visibleView(int visibleGone) {
@@ -267,14 +290,15 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
             case R.id.tv_name:
                 finish();
                 break;
-            case R.id.tv_grade:
-                mRvGrade.setVisibility(View.VISIBLE);
-                break;
-            case R.id.video_view:
-                visibleView(View.VISIBLE);
-                break;
             case R.id.seek_bar:
                 seekBarState = CLICK;
+                break;
+            case R.id.tv_grade:
+                if (mRvGrade.getVisibility() == View.VISIBLE) {
+                    mRvGrade.setVisibility(View.GONE);
+                } else {
+                    mRvGrade.setVisibility(View.VISIBLE);
+                }
                 break;
 
             default:

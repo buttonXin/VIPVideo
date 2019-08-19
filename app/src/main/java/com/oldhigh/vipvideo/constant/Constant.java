@@ -8,7 +8,8 @@ package com.oldhigh.vipvideo.constant;
  */
 public class Constant {
 
-    public static final String BASE_URL = "http://131zy.vip/";
+    public static final String BASE_URL = "http://131zy.vip";
+
     public static final String BASE_URL_TWO = "http://131zy.net/";
 
 

@@ -2,14 +2,17 @@ package com.oldhigh.vipvideo.http;
 
 
 import com.oldhigh.vipvideo.App;
+import com.oldhigh.vipvideo.constant.Constant;
 import com.oldhigh.vipvideo.http.api.APIInterface;
 import com.oldhigh.vipvideo.http.intercept.CacheIntercept;
+import com.oldhigh.vipvideo.util.L;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -39,10 +42,20 @@ public class HttpManager {
         int cacheSize = 10 * 1024 * 1024;
         //创建缓存对象
         Cache cache = new Cache(cacheFile, cacheSize);
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+            @Override
+            public void log(String message) {
+                L.d(message);
+            }
+        });
+        logging.level(HttpLoggingInterceptor.Level.BASIC);
+
         if (okHttpClient == null) {
             mOkHttpClient = new OkHttpClient.Builder()
                     .connectTimeout(20, TimeUnit.SECONDS)
                     .addInterceptor(new CacheIntercept())
+                    .addInterceptor(logging)
                     .cache(cache)
                     .build();
         } else {
@@ -50,7 +63,7 @@ public class HttpManager {
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://131zy.vip/")
+                .baseUrl(Constant.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(mOkHttpClient)
